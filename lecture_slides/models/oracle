@@ -1,0 +1,40 @@
+#!/usr/bin/python3
+import sys
+import re
+
+lines = sys.stdin.readlines()
+lemma = sys.argv[1]
+
+# List of ranks
+rank = []
+for i in range(0, 101):
+  rank.append([])
+
+## Lemmas
+# Uniqueness lemma
+if lemma == "uniqueness":
+  for line in lines:
+    num = line.split(':')[0]
+    if re.match(
+      '.*KeySimple.*', line
+    ): rank[90].append(num)
+    elif re.match(
+      '.*senc\(xsimple.*', line
+    ): rank[80].append(num)
+    elif re.match(
+      '.*senc\(~xsimple.*', line
+    ): rank[80].append(num)
+    elif re.match(
+      '.*KU\( ~key.*', line
+    ): rank[70].append(num)
+    else:
+      rank[50].append(num)
+else:
+  exit(0)
+
+# Order all goals by ranking
+# (highest to lowest)
+for goalList in reversed(rank):
+  for goal in goalList:
+    sys.stderr.write(goal)
+    print (goal)

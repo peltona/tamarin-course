@@ -1,0 +1,15 @@
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fls
+*.gz
+*.lof
+*.log
+*.out
+*.toc
+*.aes
+*.xml
+
+.DS_Store
+.vscode/

@@ -1,0 +1,8 @@
+tactic: uniqueness
+presort: C
+prio:
+    isFactName "KeySimple"
+prio:
+    regex "senc\(xsimple" | regex "senc\(~xsimple"
+prio: {smallest}
+    regex "KU\( ~key"

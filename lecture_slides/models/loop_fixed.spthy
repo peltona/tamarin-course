@@ -1,0 +1,14 @@
+theory Loop
+begin
+
+rule start:  [ Fr(x) ] --[ Start(x) ]-> [ A(x)]
+rule repeat: [  A(x) ] --[  Loop(x) ]-> [ A(x)]
+rule stop:   [  A(x) ] --[  Stop(x) ]-> [     ]
+
+lemma AlwaysStarts [use_induction, reuse]:
+  " All x #i . Loop(x)@i ==> Ex #j. Start(x)@j "
+
+lemma AlwaysStartsWhenEnds [use_induction]:
+  " All x #i . Stop(x)@i ==> Ex #j. Start(x)@j "
+
+end

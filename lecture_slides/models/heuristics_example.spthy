@@ -1,0 +1,41 @@
+theory HeuristicsExample
+begin
+
+#include "tactic"
+
+builtins: symmetric-encryption
+
+rule generate_simple:
+    [ Fr(~xsimple), Fr(~key) ]
+  --[ Simple(~xsimple) ]->
+    [ Out(senc(~xsimple, ~key))
+    , KeySimple(~key) ]
+
+rule generate_complicated:
+    [ In(x), Fr(~key) ]
+  --[ Complicated(x) ]->
+    [ Out(senc(x, ~key))
+    , KeyComplicated(~key) ]
+
+rule receive:
+    [ KeyComplicated(keycomplicated)
+    , In(senc(xcomplicated, keycomplicated))
+    , KeySimple(keysimple)
+    , In(senc(xsimple, keysimple)) ]
+  --[ Unique(<xcomplicated, xsimple>)]->
+    [ ]
+
+/* This restriction artificially complicates an
+ * occurrence of an event Complicated(x) */
+restriction complicate:
+    " All x #i. Complicated(x)@i
+        ==> (Ex y #j. Complicated(y)@j & #j < #i)
+          | (Ex y #j. Simple(y)@j & #j < #i)
+    "
+
+lemma uniqueness:
+    " All #i #j x. Unique(x)@i & Unique(x)@j
+        ==> #i = #j
+    "
+
+end

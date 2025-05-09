@@ -1,0 +1,63 @@
+theory sources
+begin
+
+builtins: asymmetric-encryption
+
+// Register key-pair
+rule register_pk:
+  let
+    pubkey = pk(~ltk)
+  in
+  [ Fr(~ltk) ]
+--[ Register($A, ~ltk) ]->
+  [ !Ltk($A, ~ltk)
+  , !Pk($A, pubkey)
+  , Out(pubkey) ]
+
+// Reveal long-term key
+rule reveal_pk:
+  [ !Ltk($A, ~ltk) ]
+--[ Reveal($A) ]->
+  [ Out(~ltk) ]
+
+// Initiator
+rule Rule_I_1:
+  let
+    m1 = aenc{'req',$I,~n}pkR
+  in
+  [ Fr(~n)
+  , !Ltk($I, ltkI)
+  , !Pk(R, pkR) ]
+--[ SecretI($I,R,~n)
+  , Out_I(m1) ]->
+  [ Out(m1)
+  , State_I($I,R,~n,pkR,ltkI) ]
+
+rule Rule_I_2:
+  let
+    m2 = aenc{'rsp',~n}pk(ltkI)
+  in
+  [ State_I($I,R,~n,pkR,ltkI)
+  , In(m2) ]
+--[  ]->
+  [  ]
+
+// Responder
+rule Rule_R:
+  let
+    m1 = aenc{'req',I,x}pk(ltkR)
+    m2 = aenc{'rsp',x}pkI
+  in
+  [ !Ltk(R, ltkR)
+  , !Pk(I, pkI)
+  , In(m1) ]
+--[ In_R(m1, x) ]->
+  [ Out(m2) ]
+
+lemma sources [sources]:
+    " All m x #i . In_R(m, x)@i
+        ==> ((Ex #j. Out_I(m)@j & #j < #i)
+           | (Ex #k. KU(x)@k & #k < #i))
+    "
+
+end

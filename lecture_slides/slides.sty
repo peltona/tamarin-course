@@ -1,0 +1,48 @@
+%% Color theme
+\definecolor{ThemeBlue}{HTML}{1C377D}
+\usecolortheme[named=ThemeBlue]{structure}
+
+%% Frame
+\setbeamerfont{frametitle}{size=\large,series=\bfseries,parent=structure}
+
+%% Footer
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{navigation symbols}{}
+
+%% Title page
+\def\maketitle{\frame[plain,noframenumbering]{\titlepage}}
+
+\setbeamerfont{title}{size=\Large,series=\bfseries}
+\setbeamerfont{subtitle}{size=\normalsize,parent=title}
+\setbeamerfont{author}{size=\normalsize,parent=structure}
+\setbeamerfont{institute}{size=\footnotesize,parent=structure}
+\setbeamerfont{date}{size=\scriptsize,parent=structure}
+
+\setbeamertemplate{title page}{
+    \vfill
+    \begingroup
+        \centering
+        \vskip3em
+        \usebeamertemplate{title}
+        \usebeamertemplate{subtitle}
+        \vskip1.5em
+        \usebeamertemplate{author}
+        \vskip-.75em
+        \usebeamertemplate{institute}
+        \vskip1em
+        \usebeamertemplate{date}
+    \endgroup
+    \vfill
+}
+
+%% Section titles
+\setbeamerfont{section title}{size=\Large,series=\bfseries}
+
+\setbeamertemplate{section page}{
+    \begin{centering}
+        \begin{beamercolorbox}[center]{part title}
+            \usebeamerfont{section title}\bfseries\insertsection
+        \end{beamercolorbox}
+    \end{centering}
+}
+\AtBeginSection{\frame[plain,c,noframenumbering]{\sectionpage}}

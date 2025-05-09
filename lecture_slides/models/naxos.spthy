@@ -1,0 +1,65 @@
+theory NAXOS
+begin
+
+builtins: diffie-hellman
+
+functions: h1/1, h2/1
+
+/* Generate long-term key-pair */
+rule generate_ltk:
+    let
+      pkA = 'g'^~lkA 
+    in
+    [ Fr(~lkA) ] 
+  --[ Register($A) ]->
+    [ !Ltk($A,~lkA)
+    , !Pk($A,pkA)
+    , Out(pkA) ]
+
+/* Initiator: send hkI */
+rule initiator_1:
+    let
+      exI = h1(<~eskI,~ltkI>)
+      hkI = 'g'^exI
+    in
+    [ Fr(~eskI), !Ltk($I, ~ltkI) ]
+  --[ ]->
+    [ Init_1(~eskI,$I,$R,~ltkI,hkI)
+    , Out(hkI) ]
+
+/* Responder: receive hkI+send hkR */
+rule responder_1:
+    let
+      exR = h1(<~eskR,~ltkR>)
+      hkr = 'g'^exR
+      kR  = h2(<pkI^exR,X^~ltkR,
+                X^exR,$I,$R>) 
+    in
+    [ In(X)
+    , Fr(~eskR)
+    , !Ltk($R,~ltkR)
+    , !Pk($I,pkI) ]
+  --[ Accept($R,$I,kR) ]->
+    [ Out(hkr) ]
+
+/* Initiator: receive hkR */
+rule initiator_2:
+    let
+      exI = h1(<~eskI,~ltkI>)
+      kI  = h2(<Y^~ltkI,pkR^exI,
+                Y^exI,$I,$R>)
+    in
+    [ In(Y), !Pk($R,pkR)
+    , Init_1(~eskI,$I,$R,~ltkI,hkI) ]
+  --[ Accept($I,$R,kI) ]->
+    [ ]
+
+/* Sanity check */
+lemma reachability: exists-trace
+    " Ex I R k #i #j .
+        Accept(I, R, k)@i
+      & Accept(R, I, k)@j
+      & i < j
+    "
+
+end

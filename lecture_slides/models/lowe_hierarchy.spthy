@@ -1,0 +1,51 @@
+theory hierarchy
+begin
+
+rule dummy:
+    [ Fr(~A), Fr(~B), Fr(~t) ]
+  --[ Create(~A)
+    , Reveal(~A)
+    , Running(~B, ~A, ~t)
+    , Commit(~A, ~B, ~t)
+    ]->
+    [ ]
+
+/* Aliveness from A's perspective */
+lemma aliveness:
+    " All A B t #i .
+        Commit(A, B, t)@i
+        & not (Ex #r. Reveal(A)@r)
+        & not (Ex #r. Reveal(B)@r)
+            ==> (Ex #j. Create(B)@j & j < i)
+    "
+
+/* Weak agreement from A's perspective */
+lemma weak_agreement:
+    " All A B t #i .
+        Commit(A, B, t)@i
+        & not (Ex #r. Reveal(A)@r)
+        & not (Ex #r. Reveal(B)@r)
+            ==> (Ex t2 #j. Running(B, A, t2)@j & j < i)
+    "
+
+/* Non-injective agreement from A's perspective */
+lemma noninjective_agreement:
+    " All A B t #i .
+        Commit(A, B, t) @i
+        & not (Ex #r. Reveal(A)@r)
+        & not (Ex #r. Reveal(B)@r)
+            ==> (Ex #j. Running(B, A, t)@j & j < i)
+    "
+
+/* Injective agreement from A's perspective */
+lemma injective_agree:
+    " All A B t #i.
+        Commit(A, B, t)@i
+        & not (Ex #r. Reveal(A)@r)
+        & not (Ex #r. Reveal(B)@r)
+            ==> (Ex #j. Running(B, A, t)@j & j < i
+                 & not(Ex A2 B2 #i2 . Commit(A2, B2, t)@i2
+                    & not(#i = #i2)))
+    "
+
+end

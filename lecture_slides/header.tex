@@ -1,0 +1,220 @@
+\usepackage{slides}
+\usepackage{soul}
+\usepackage{pdfpc}
+\usepackage{ebproof}
+\usepackage{bigdelim}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{xspace}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[symbol]{footmisc}
+\usepackage[noend]{algpseudocode}
+\usepackage[
+    backend    = biber,
+    style      = alphabetic,
+    giveninits = true,
+    maxnames   = 16,
+    minnames   = 16,
+]{biblatex}
+
+\addbibresource{./references.bib}
+
+\usetikzlibrary{
+    positioning,
+    shapes.symbols,
+    shadows,
+    arrows,
+    calc
+}
+
+\newcommand{\senc}{\text{senc}}
+\newcommand{\msg}{\text{msg}}
+\newcommand{\nonce}{\text{nonce}}
+\newcommand{\KDF}{\text{KDF}}
+\newcommand{\key}{\text{key}}
+
+\newcommand{\Tamarin}[1]{\textsc{Tamarin}\xspace}
+
+%% Print: [#1] -[#2]-> [#3]
+\newcommand{\MSR}[3]{#1 -\hspace{-4pt}[\hspace{5pt} #2 \hspace{4pt}]\hspace{-4.6pt}\rightarrow #3}
+%% Print: -[#1]->
+\newcommand{\ActionFact}[1]{-\hspace{-4pt}[\hspace{5pt} #1 \hspace{4pt}]\hspace{-4.6pt}\rightarrow}
+%% Print: ~
+\newcommand{\tildelow}{\raisebox{0.5ex}{\texttildelow}}
+%% Print: ^
+\newcommand{\pow}{\textasciicircum{}}
+%% Highlight text in overlay
+\newcommand{\althl}[2][2]{\alt<#1>{\hl{#2}}{#2}}
+
+%% Sticky notes to represent facts
+\definecolor{StickyNoteYellow}{RGB}{241,239,161}
+\definecolor{StickyNoteRed}{RGB}{255,167,169}
+\definecolor{StickyNoteGreen}{RGB}{148,199,146}
+\definecolor{StickyNoteBlue}{RGB}{167,229,241}
+\NewDocumentCommand{\StickyNote}{O{StickyNoteYellow}O{1cm}m}{%
+    \begin{tikzpicture}
+        \node[
+            drop shadow={
+                shadow xshift = 2pt,
+                shadow yshift = -4pt,
+            },
+            xslant = -0.1,
+            yslant = 0.1,
+            draw   = black,
+            fill   = #1,
+            text   = black,
+        ] {\parbox[t][#2][c]{#2}{\centering#3}};
+    \end{tikzpicture}
+}
+
+%% Colors for terms and facts
+\definecolor{TermBlue}{HTML}{1C377D}
+\definecolor{FactPurple}{HTML}{7C3655}
+
+\newcommand{\term}[1]{\textcolor{TermBlue}{#1}}
+\newcommand{\Term}[1]{\textcolor{TermBlue}{#1}}
+\newcommand{\Fact}[1]{\textcolor{FactPurple}{#1}}
+
+%% Other colors
+\definecolor{AdversaryRed}{HTML}{DA3B26}
+
+%% Listings
+\lstset{escapeinside={(*@}{@*)}}
+\lstset{numberstyle=\tiny}
+
+\definecolor{TamarinBlue}{RGB}{42,0,255}
+\definecolor{TamarinGreen}{RGB}{48,110,32}
+\definecolor{TamarinPurple}{RGB}{175,36,67}
+
+\lstdefinestyle{tamarin}{
+    basicstyle    = \linespread{0.75}\footnotesize\ttfamily,
+    extendedchars = true,
+    tabsize       = 2,
+    columns       = fixed,
+    numbers       = none,
+    breaklines    = true,
+    literate      = {~}{{\raisebox{0.5ex}{\texttildelow}}}{1},
+    morekeywords  = {theory, builtins, restriction, equations, functions, rule,
+                     let, in, lemma, All, Ex, not, predicates, begin, end},
+    keywordstyle  = \color{TamarinPurple},
+    morecomment   = [l]{//},
+    morecomment   = [s]{/*}{*/},
+    commentstyle  = \color{TamarinGreen},
+    xleftmargin   = 0mm,
+    upquote       = true,
+    morestring    = *[b]",
+    showstringspaces = false
+}
+
+\lstdefinestyle{tactic}{
+    basicstyle    = \linespread{0.75}\footnotesize\ttfamily,
+    extendedchars = true,
+    tabsize       = 2,
+    columns       = fixed,
+    numbers       = none,
+    breaklines    = true,
+    literate      = {~}{{\raisebox{0.5ex}{\texttildelow}}}{1},
+    alsoletter    = :,
+    morekeywords  = {tactic:, presort:, prio:, deprio:},
+    keywordstyle  = \color{TamarinPurple},
+    morecomment   = [l]{//},
+    morecomment   = [s]{/*}{*/},
+    commentstyle  = \color{TamarinGreen},
+    xleftmargin   = 0mm,
+    upquote       = true,
+    morestring    = *[b]",
+}
+
+\lstdefinestyle{oracle}{
+    basicstyle    = \linespread{0.75}\footnotesize\ttfamily,
+    extendedchars = true,
+    tabsize       = 2,
+    columns       = fixed,
+    numbers       = none,
+    breaklines    = true,
+    literate      = {~}{{\raisebox{0.5ex}{\texttildelow}}}{1},
+    morecomment   = [l]{\#},
+    morekeywords  = {import, for, in, if, elif},
+    keywordstyle  = \color{TamarinPurple},
+    commentstyle  = \color{TamarinGreen},
+    xleftmargin   = 0mm,
+    upquote       = true,
+}
+
+\definecolor{ProVerifGreen}{RGB}{48,110,32}
+\definecolor{ProVerifBlue}{RGB}{64,112,161}
+
+\lstdefinestyle{proverif}{
+    basicstyle    = \linespread{0.75}\footnotesize\ttfamily,
+    extendedchars = true,
+    tabsize       = 2,
+    columns       = fixed,
+    numbers       = none,
+    breaklines    = true,
+    literate      = {~}{{\raisebox{0.5ex}{\texttildelow}}}{1},
+    morecomment   = [s]{(*}{*)},
+    commentstyle  = \color{ProVerifGreen},
+    keywordstyle  = \color{ProVerifBlue},
+    morekeywords  = {in, if, event, new, let, out},
+    xleftmargin   = 0mm,
+}
+
+\definecolor{proofTreeBlue}{HTML}{2639B0}
+\definecolor{proofTreeRed}{HTML}{921C12}
+
+\lstdefinestyle{prooftree}{
+    basicstyle    = \linespread{0.8}\footnotesize\fontfamily{pcr}\selectfont,
+    extendedchars = true,
+    tabsize       = 2,
+    columns       = fixed,
+    numbers       = left,
+    breaklines    = true,
+    literate      = {~}{{\raisebox{0.5ex}{\texttildelow}}}{1},
+    keywords      = [1]{lemma, case, next, qed, by, end, Diff-Lemmas},
+    keywordstyle  = [1]\color{black}\bfseries,
+    keywords      = [2]{simplify, solve, sorry, contradiction, induction,
+                        autoprove, rule-equivalence},
+    keywordstyle  = [2]\color{proofTreeBlue}\bfseries,
+    keywords      = [3]{@, \|, <, \^},
+    keywordstyle  = [3]\color{proofTreeRed},
+    alsoletter    = @\|<\^-,
+    moredelim     = **[is][{\color{proofTreeBlue}}]{<<}{>>},
+    xleftmargin   = 0mm,
+    upquote       = true,
+    morestring    = *[b]",
+}
+
+%% Color boxes
+\definecolor{ColorBoxBlue}{HTML}{1C377D}
+\tcbset{
+    colback      = white,
+    colframe     = black,
+    fonttitle    = \bfseries,
+    coltitle     = white,
+    colbacktitle = ColorBoxBlue,
+    boxrule      = 1pt
+}
+
+%% Vertical separator for frames
+\newcommand<>{\vsep}{
+    \begin{tikzpicture}[remember picture,overlay]%
+        \draw[ultra thick]
+            ($(current page.north west)+(8cm,0.5cm)$) to
+            ($(current page.south west)+(8cm,-0.5cm)$)
+        ;
+    \end{tikzpicture}%
+}
+
+%% Horizontal separator for frames
+\newcommand<>{\hsep}{
+    \begin{tikzpicture}[remember picture,overlay]%
+        \draw[ultra thick]
+            ($(current page.north west)+(-0.5cm,-4.5cm)$) to
+            ($(current page.north east)+(0.5cm,-4.5cm)$)
+        ;
+    \end{tikzpicture}%
+}

@@ -1,0 +1,25 @@
+/*
+   Protocol:    Protocol
+   Modeler:     Name(s)
+   Date:        Month Year
+
+   Status:      Working
+
+   Description of the protocol.
+*/
+
+theory PROTOCOL
+begin
+
+/* Built-in equational theories,
+   e.g., symmetric-encryption */
+builtins:
+/* User-defined functions and
+   equational theories, e.g., */
+functions: // enc/2, dec/2
+equations: // dec(enc(m,k),k) = m
+
+/** Rules **/
+/** Lemmas **/
+
+end
